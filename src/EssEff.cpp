@@ -136,7 +136,7 @@ std::string EssEff::getAbsolutePath(std::string path){
         wchar_t buf[PATH_MAX];
         wchar_t *absPathC = _wfullpath(buf, pathW.c_str(), PATH_MAX);
         if (absPathC)
-            return string::fromWstring(absPathC);
+            return string::UTF16toUTF8(absPathC);
     #endif
     return "";
 }
