@@ -109,6 +109,11 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     needs: [build, build-mac]
+    # A fork's GITHUB_TOKEN is read-only by default, which fails release
+    # creation with a 403. Grant it here rather than relying on the
+    # repository's "Workflow permissions" setting.
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: FranzDiebold/github-env-vars-action@v2
