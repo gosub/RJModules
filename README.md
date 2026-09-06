@@ -3,6 +3,12 @@
 # RJModules [![](https://img.shields.io/badge/version-0.5.0-brightgreen.svg)](https://github.com/Miserlou/RJModules/releases) [![](https://img.shields.io/badge/youtube-demo-red.svg)](https://www.youtube.com/watch?v=qkEjmZZbGGo)
 Various DIY modules made by Rich Jones for use with [VCV Rack](https://github.com/VCVRack/Rack) 0.6.3 and 1.1.0+.
 
+> **This is a fork** of [Miserlou/RJModules](https://github.com/Miserlou/RJModules),
+> kept building against current VCV Rack 2 and releasing prebuilt binaries for
+> Linux, Windows and macOS (Intel and Apple Silicon) from
+> [Releases](https://github.com/gosub/RJModules/releases). See
+> [RELEASING.md](RELEASING.md). All module design and code is Rich Jones's.
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
