@@ -45,8 +45,6 @@ jobs:
         platform: [win-x64, lin-x64]
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - uses: actions/cache@v4
         id: plugin-version-cache
         with:
@@ -80,8 +78,6 @@ jobs:
         platform: [x64, arm64]
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - uses: actions/cache@v4
         id: plugin-version-cache
         with:
