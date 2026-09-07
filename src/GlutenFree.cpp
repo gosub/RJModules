@@ -205,6 +205,29 @@ struct GlutenFree : Module {
         outputs[RIGHT_OUTPUT].value = processed * 3; // Boost as default volumes are too low
 
     }
+
+    json_t *dataToJson() override {
+        json_t *rootJ = json_object();
+        if (fileLoaded)
+            json_object_set_new(rootJ, "wavef", json_string(voice_full.c_str()));
+        return rootJ;
+    }
+    void dataFromJson(json_t *rootJ) override {
+        json_t *waveJ = json_object_get(rootJ, "wavef");
+        if (!waveJ)
+            return;
+        // Nothing here may throw into Rack's patch loader. If the sample has
+        // been moved or deleted since the patch was saved, FileRead raises
+        // stk::StkError, which does not derive from std::exception; a path
+        // under 8 characters makes loadFile's substr raise std::out_of_range.
+        // Either way the module just comes back with no sample loaded.
+        try {
+            loadFile(json_string_value(waveJ));
+        }
+        catch (...) {
+            fileLoaded = false;
+        }
+    }
 };
 
 /*
@@ -283,28 +306,6 @@ struct GlutenFreeWidget : ModuleWidget {
     // addInput(createInput<PJ301MPort>(Vec(45, 320), module, GlutenFree::GATE_INPUT));
     // addOutput(createOutput<PJ301MPort>(Vec(80, 320), module, GlutenFree::LEFT_OUTPUT));
     addOutput(createOutput<PJ301MPort>(Vec(112.5, 320), module, GlutenFree::RIGHT_OUTPUT));
-    }
-
-    json_t *toJson() {
-        json_t *rootJ = ModuleWidget::toJson();
-        GlutenFree *module = dynamic_cast<GlutenFree *>(this->module);
-        json_object_set_new(rootJ, "wavef", json_string(module->voice_full.c_str()));
-        json_object_set_new(rootJ, "voices", json_real(module->lastVoices));
-        return rootJ;
-    }
-
-    void fromJson(json_t *rootJ) {
-        ModuleWidget::fromJson(rootJ);
-        json_t *waveJ = json_object_get(rootJ, "wavef");
-        json_t *voicesJ = json_object_get(rootJ, "voices");
-        GlutenFree *module = dynamic_cast<GlutenFree *>(this->module);
-        if (waveJ){
-            #ifdef __APPLE__
-                module->loadFile(json_string_value(waveJ));
-            #endif
-        }
-        if (voicesJ)
-            module->lastVoices=json_integer_value(voicesJ);
     }
 
 };
