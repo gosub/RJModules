@@ -64,7 +64,6 @@ struct Gaussian: Module {
     int frame_counter = 0;
     bool force_update = false;
     int COUNTER_MAX = 5000;
-    int wave_mode_index = 0;
 
     float last_mu = -1;
     float last_sigma = -1;
@@ -205,21 +204,6 @@ struct GaussianWidget: ModuleWidget {
         addChild(createLight<MediumLight<RedLight>>(Vec(LEFT,  BASE + SPACE * 7), module, Gaussian::CH_LIGHT + 16));
         addChild(createLight<MediumLight<RedLight>>(Vec(LEFT,  BASE + SPACE * 8), module, Gaussian::CH_LIGHT + 17));
 
-    }
-
-    json_t *toJson() {
-        json_t *rootJ = ModuleWidget::toJson();
-        Gaussian *module = dynamic_cast<Gaussian *>(this->module);
-        json_object_set_new(rootJ, "wave", json_real(module->wave_mode_index));
-        return rootJ;
-    }
-
-    void fromJson(json_t *rootJ) {
-        ModuleWidget::fromJson(rootJ);
-        json_t *waveJ = json_object_get(rootJ, "wave");
-        Gaussian *module = dynamic_cast<Gaussian *>(this->module);
-        if (waveJ)
-            module->wave_mode_index = json_number_value(waveJ);
     }
 
 };
