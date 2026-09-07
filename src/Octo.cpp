@@ -230,6 +230,17 @@ struct Octo: Module {
         }
 
     }
+
+    json_t *dataToJson() override {
+        json_t *rootJ = json_object();
+        json_object_set_new(rootJ, "wave", json_integer(wave_mode_index));
+        return rootJ;
+    }
+    void dataFromJson(json_t *rootJ) override {
+        json_t *waveJ = json_object_get(rootJ, "wave");
+        if (waveJ)
+            wave_mode_index = json_integer_value(waveJ);
+    }
 };
 
 struct OctoWidget: ModuleWidget {
@@ -271,21 +282,6 @@ struct OctoWidget: ModuleWidget {
         addChild(createLight<MediumLight<WhiteLight>>(Vec(LEFT,  BASE + SPACE * 5), module, Octo::CH_LIGHT + 5));
         addChild(createLight<MediumLight<WhiteLight>>(Vec(RIGHT, BASE + SPACE * 6), module, Octo::CH_LIGHT + 6));
         addChild(createLight<MediumLight<WhiteLight>>(Vec(LEFT,  BASE + SPACE * 7), module, Octo::CH_LIGHT + 7));
-    }
-
-    json_t *toJson() {
-        json_t *rootJ = ModuleWidget::toJson();
-        Octo *module = dynamic_cast<Octo *>(this->module);
-        json_object_set_new(rootJ, "wave", json_real(module->wave_mode_index));
-        return rootJ;
-    }
-
-    void fromJson(json_t *rootJ) {
-        ModuleWidget::fromJson(rootJ);
-        json_t *waveJ = json_object_get(rootJ, "wave");
-        Octo *module = dynamic_cast<Octo *>(this->module);
-        if (waveJ)
-            module->wave_mode_index = json_number_value(waveJ);
     }
 
     void appendContextMenu(Menu *menu) override
