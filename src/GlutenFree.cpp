@@ -245,12 +245,21 @@ struct LoadWavButton : SvgSwitch {
         if (module){
             std::string dir = "";
             char *path = osdialog_file(OSDIALOG_OPEN, dir.c_str(), NULL, NULL);
-            char* ext;
-            ext = strrchr(path, '.');
-            if (path && ( strcmp(ext, ".wav") == 0 || strcmp(ext, ".WAV") == 0 || strcmp(ext, ".aiff") == 0 || strcmp(ext, ".aif") == 0)) {
-                module->loadFile(path);
-                // module->last_path = path;
-                // module->file_chosen = true;
+            // path is NULL when the dialog is cancelled, and strrchr returns
+            // NULL for a name with no dot in it. Both were dereferenced
+            // unconditionally, so cancelling the dialog crashed Rack.
+            if (path) {
+                const char *ext = strrchr(path, '.');
+                if (ext && ( strcmp(ext, ".wav") == 0 || strcmp(ext, ".WAV") == 0 || strcmp(ext, ".aiff") == 0 || strcmp(ext, ".aif") == 0)) {
+                    // As in dataFromJson: a file STK cannot read raises
+                    // stk::StkError, which must not escape into the UI.
+                    try {
+                        module->loadFile(path);
+                    }
+                    catch (...) {
+                        module->fileLoaded = false;
+                    }
+                }
                 free(path);
             }
         }
